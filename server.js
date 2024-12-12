@@ -3,10 +3,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const Pusher = require('pusher');
 const axios = require('axios');
+const cors = require('cors');
 
 const app = express();
 app.use(bodyParser.json());
 
+app.use(cors());
 // Initialize Pusher
 const pusher = new Pusher({
   appId: process.env.PUSHER_APP_ID,
