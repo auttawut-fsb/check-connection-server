@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require('express');
-const bodyParser = require('body-parser');
 const Pusher = require('pusher');
 const axios = require('axios');
 const cors = require('cors');
@@ -8,7 +7,8 @@ const cors = require('cors');
 const app = express();
 
 app.use(express.json());
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cors());
 
 app.use(cors());
 // Initialize Pusher
@@ -24,8 +24,12 @@ const pusher = new Pusher({
 // Typically you'd validate the user's identity here.
 // For now, we assume the user is logged in and has an ID.
 app.post('/pusher/auth', (req, res) => {
-  const { channel_name, socket_id } = req.body;
+  const socketId = req.body.socket_id;
   console.log('Auth request:', req.body);
+
+  if (!socketId) {
+    return res.status(400).send('Missing socket_id or channel_name');
+  }
 
   // In a real app, determine the user_id and user_info from session or database
   const user_id = "user_" + Math.floor(Math.random() * 1000); // random user id
@@ -34,7 +38,7 @@ app.post('/pusher/auth', (req, res) => {
     role: "member"
   };
 
-  const authResponse = pusher.authenticateUser(socket_id, {
+  const authResponse = pusher.authenticateUser(socketId, {
     user_id: user_id,
     user_info: user_info
   });
