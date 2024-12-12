@@ -6,6 +6,8 @@ const axios = require('axios');
 const cors = require('cors');
 
 const app = express();
+
+app.use(express.json());
 app.use(bodyParser.json());
 
 app.use(cors());
@@ -22,10 +24,7 @@ const pusher = new Pusher({
 // Typically you'd validate the user's identity here.
 // For now, we assume the user is logged in and has an ID.
 app.post('/pusher/auth', (req, res) => {
-  const { channel_name } = req.body;
-
-  const socketId = req.body.socket_id;
-
+  const { channel_name, socket_id } = req.body;
   console.log('Auth request:', req.body);
 
   // In a real app, determine the user_id and user_info from session or database
@@ -35,7 +34,7 @@ app.post('/pusher/auth', (req, res) => {
     role: "member"
   };
 
-  const authResponse = pusher.authenticateUser(socketId, {
+  const authResponse = pusher.authenticateUser(socket_id, {
     user_id: user_id,
     user_info: user_info
   });
