@@ -39,8 +39,8 @@ app.post('/pusher/auth', (req, res) => {
   };
 
   const authResponse = pusher.authenticateUser(socketId, {
-    user_id: user_id,
-    user_info: user_info
+    id: user_id,
+    user_info: user_info,
   });
 
   res.send(authResponse);
